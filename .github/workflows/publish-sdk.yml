@@ -1,0 +1,51 @@
+name: Publish Master Chatbot SDK
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    name: Build and Publish SDK
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: master_chatbot_client
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install build tools
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install build twine
+
+      - name: Build SDK
+        run: |
+          rm -rf dist build *.egg-info
+          python -m build
+
+      - name: Check package
+        run: |
+          python -m twine check dist/*
+
+      - name: Publish to GitHub Packages
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python -m twine upload \
+            --repository-url https://upload.pypi.pkg.github.com/aastha-tech345/ \
+            dist/*
