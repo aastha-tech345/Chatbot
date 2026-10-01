@@ -1,6 +1,7 @@
 name: Publish Master Chatbot SDK
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - "v*"
@@ -32,9 +33,13 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install build twine
 
+      - name: Clean previous builds
+        run: |
+          rm -rf dist build
+          rm -rf *.egg-info
+
       - name: Build SDK
         run: |
-          rm -rf dist build *.egg-info
           python -m build
 
       - name: Check package
