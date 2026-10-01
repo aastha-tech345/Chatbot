@@ -1,0 +1,776 @@
+{
+  "applications": [
+    {
+      "app_id": "ecommerce",
+      "name": "E-commerce",
+      "base_url": "http://localhost:3333",
+      "jwt_secret_env": "ECOMMERCE_JWT_SECRET",
+      "jwt_algorithm": "HS256",
+      "service_key_env": "ECOMMERCE_MASTER_CHATBOT_SERVICE_KEY",
+      "authentication": {
+        "enabled": true,
+        "login_required_for_private_data": true,
+        "method": "password",
+        "fields": [
+          {
+            "name": "email",
+            "label": "Email",
+            "type": "email",
+            "required": true
+          },
+          {
+            "name": "password",
+            "label": "Password",
+            "type": "password",
+            "required": true
+          }
+        ],
+        "action_label": "Sign in"
+      },
+      "chatbot": {
+        "enabled": true,
+        "welcome_message": "Hi! I can help you find products, compare items, check prices, track orders, and manage your shopping.",
+        "quick_actions": [
+          "Show products",
+          "Search products",
+          "Compare products",
+          "Track my order",
+          "Show my cart"
+        ]
+      },
+      "routes": [
+        {
+          "name": "search_products",
+          "method": "GET",
+          "path": "/api/v1/products",
+          "description": "Search published products by name, category, brand, price, rating and stock availability.",
+          "visibility": "public",
+          "requires_auth": false,
+          "requires_user_context": false,
+          "parameters": {
+            "q": "Search query",
+            "category": "Product category",
+            "brand": "Brand",
+            "min_price": "Minimum price",
+            "max_price": "Maximum price",
+            "min_rating": "Minimum rating",
+            "sort": "Sort: relevance, price-low, price-high, rating",
+            "page": "Page number",
+            "per_page": "Results per page",
+            "availability": "Stock status: in_stock or out_of_stock"
+          }
+        },
+        {
+          "name": "get_product",
+          "method": "GET",
+          "path": "/api/v1/products/{slug}",
+          "description": "Get detailed product information by slug",
+          "visibility": "public",
+          "requires_auth": false,
+          "requires_user_context": false,
+          "parameters": {
+            "slug": "Product slug"
+          }
+        },
+        {
+          "name": "list_categories",
+          "method": "GET",
+          "path": "/api/v1/categories",
+          "description": "List product categories available to customers",
+          "visibility": "public",
+          "requires_auth": false,
+          "requires_user_context": false
+        },
+        {
+          "name": "list_brands",
+          "method": "GET",
+          "path": "/api/v1/brands",
+          "description": "List product brands available to customers",
+          "visibility": "public",
+          "requires_auth": false,
+          "requires_user_context": false
+        },
+        {
+          "name": "get_cart",
+          "method": "GET",
+          "path": "/api/v1/cart",
+          "description": "Get the authenticated user's shopping cart",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": true
+        },
+        {
+          "name": "list_orders",
+          "method": "GET",
+          "path": "/api/v1/orders",
+          "description": "List the authenticated user's orders",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": true
+        },
+        {
+          "name": "get_order",
+          "method": "GET",
+          "path": "/api/v1/orders/{order_id}",
+          "description": "Get detailed order information",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": true,
+          "parameters": {
+            "order_id": "Order ID"
+          }
+        },
+        {
+          "name": "track_order_item",
+          "method": "GET",
+          "path": "/api/v1/orders/items/{item_id}/tracking",
+          "description": "Track a specific item in the authenticated user's order",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": true,
+          "parameters": {
+            "item_id": "Order item ID"
+          }
+        },
+        {
+          "name": "list_returns",
+          "method": "GET",
+          "path": "/api/v1/returns",
+          "description": "List return requests for the authenticated user",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": true
+        },
+        {
+          "name": "get_wishlist",
+          "method": "GET",
+          "path": "/api/v1/wishlist",
+          "description": "Get the authenticated user's wishlist",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": true
+        },
+        {
+          "name": "list_notifications",
+          "method": "GET",
+          "path": "/api/v1/notifications",
+          "description": "List notifications for the authenticated user",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": true
+        },
+        {
+          "name": "get_unread_notification_count",
+          "method": "GET",
+          "path": "/api/v1/notifications/unread-count",
+          "description": "Get the number of unread notifications for the authenticated user",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": true
+        },
+        {
+          "name": "add_to_cart",
+          "method": "POST",
+          "path": "/api/v1/cart/items",
+          "description": "Add a product to the signed-in customer cart.",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": true,
+          "parameters": {
+            "product_id": "Product ID from API record",
+            "quantity": "Integer quantity 1 to 20"
+          },
+          "required_parameters": [
+            "product_id",
+            "quantity"
+          ]
+        },
+        {
+          "name": "update_cart_item",
+          "method": "PUT",
+          "path": "/api/v1/cart/items/{variant_id}",
+          "description": "Change quantity of a cart item; quantity 0 removes it.",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": true,
+          "parameters": {
+            "variant_id": "Variant ID from cart record",
+            "quantity": "Integer quantity 0 to 20"
+          },
+          "required_parameters": [
+            "variant_id",
+            "quantity"
+          ]
+        },
+        {
+          "name": "list_addresses",
+          "method": "GET",
+          "path": "/api/v1/auth/me/addresses",
+          "description": "List customer saved addresses.",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": true,
+          "parameters": {},
+          "required_parameters": []
+        },
+        {
+          "name": "add_address",
+          "method": "POST",
+          "path": "/api/v1/auth/me/addresses",
+          "description": "Add a saved address.",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": true,
+          "parameters": {
+            "recipient_name": "Recipient full name",
+            "line1": "Street address",
+            "city": "City",
+            "state": "State",
+            "postal_code": "Postal code"
+          },
+          "required_parameters": [
+            "recipient_name",
+            "line1",
+            "city",
+            "state",
+            "postal_code"
+          ]
+        },
+        {
+          "name": "update_address",
+          "method": "PUT",
+          "path": "/api/v1/auth/me/addresses/{address_id}",
+          "description": "Update a saved address",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": true,
+          "parameters": {
+            "address_id": "Saved address ID",
+            "recipient_name": "Recipient full name",
+            "line1": "Street address",
+            "city": "City",
+            "state": "State",
+            "postal_code": "Postal code"
+          },
+          "required_parameters": [
+            "address_id",
+            "recipient_name",
+            "line1",
+            "city",
+            "state",
+            "postal_code"
+          ]
+        },
+        {
+          "name": "request_return",
+          "method": "POST",
+          "path": "/api/v1/returns",
+          "description": "Submit return or refund request for a delivered order item",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": true,
+          "parameters": {
+            "order_item_id": "Order item ID from API",
+            "quantity": "Quantity being returned",
+            "reason": "Return reason, or refund for refund requests",
+            "issue_reason": "Customer explanation of the issue"
+          },
+          "required_parameters": [
+            "order_item_id",
+            "quantity",
+            "reason",
+            "issue_reason"
+          ]
+        },
+        {
+          "name": "list_refunds",
+          "method": "GET",
+          "path": "/api/v1/returns/refunds",
+          "description": "Check customer refund statuses and amounts.",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": true,
+          "parameters": {},
+          "required_parameters": []
+        },
+        {
+          "name": "cancel_order",
+          "method": "POST",
+          "path": "/api/v1/orders/{order_id}/cancel",
+          "description": "Cancel the entire customer order using shop eligibility rules.",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": true,
+          "parameters": {
+            "order_id": "Order ID from list_orders"
+          },
+          "required_parameters": [
+            "order_id"
+          ]
+        },
+        {
+          "name": "list_order_items",
+          "method": "GET",
+          "path": "/api/v1/orders/items",
+          "description": "List purchased products filtered by order-item status",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": true,
+          "parameters": {
+            "status": "Exact order-item status; omit for all purchased products"
+          },
+          "required_parameters": []
+        }
+      ],
+      "policies": [
+        {
+          "policy_id": "cancel-policy-v1",
+          "policy_version": "1.0",
+          "action": "cancel",
+          "enabled": true,
+          "scope": "global",
+          "window": {
+            "type": "hours",
+            "hours": 24,
+            "based_on": "order_created_at"
+          },
+          "allowed_statuses": ["pending", "confirmed"],
+          "requires_reason": false
+        },
+        {
+          "policy_id": "return-policy-v1",
+          "policy_version": "1.0",
+          "action": "return",
+          "enabled": true,
+          "scope": "global",
+          "window": {
+            "type": "days",
+            "days": 30,
+            "based_on": "delivery_date"
+          },
+          "allowed_statuses": ["delivered"],
+          "requires_reason": true
+        },
+        {
+          "policy_id": "return-electronics-v1",
+          "policy_version": "1.0",
+          "action": "return",
+          "enabled": true,
+          "scope": "category",
+          "scope_value": "electronics",
+          "window": {
+            "type": "days",
+            "days": 14,
+            "based_on": "delivery_date"
+          },
+          "allowed_statuses": ["delivered"],
+          "requires_reason": true
+        },
+        {
+          "policy_id": "refund-policy-v1",
+          "policy_version": "1.0",
+          "action": "refund",
+          "enabled": true,
+          "scope": "global",
+          "window": {
+            "type": "days",
+            "days": 30,
+            "based_on": "delivery_date"
+          },
+          "allowed_statuses": ["delivered"],
+          "requires_reason": true
+        },
+        {
+          "policy_id": "replacement-policy-v1",
+          "policy_version": "1.0",
+          "action": "replacement",
+          "enabled": true,
+          "scope": "global",
+          "window": {
+            "type": "days",
+            "days": 15,
+            "based_on": "delivery_date"
+          },
+          "allowed_statuses": ["delivered"],
+          "requires_reason": true
+        }
+      ]
+    },
+    {
+      "app_id": "his",
+      "name": "Hospital Information System",
+      "base_url": "${HIS_API_URL}",
+      "jwt_secret_env": "HIS_JWT_SECRET",
+      "service_key_env": "HIS_MASTER_CHATBOT_SERVICE_KEY",
+      "authentication": {
+        "enabled": true,
+        "login_required_for_private_data": true,
+        "method": "phone_otp",
+        "fields": [
+          {
+            "name": "phone",
+            "label": "Phone Number",
+            "type": "tel",
+            "required": true
+          }
+        ],
+        "action_label": "Send OTP"
+      },
+      "chatbot": {
+        "enabled": true,
+        "welcome_message": "Hi! I can help you find patients, doctors, departments, manage appointments, and access medical records.",
+        "quick_actions": [
+          "Show all patients",
+          "Find a doctor",
+          "Show departments",
+          "My appointments",
+          "My reports"
+        ]
+      },
+      "routes": [
+        {
+          "name": "list_patients",
+          "method": "GET",
+          "path": "/api/v1/patients/",
+          "description": "List all patients registered in the hospital system with optional search and filtering.",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": false,
+          "parameters": {
+            "search": "Search by name, phone, or patient ID",
+            "page": "Page number",
+            "page_size": "Results per page"
+          }
+        },
+        {
+          "name": "get_patient",
+          "method": "GET",
+          "path": "/api/v1/patients/{patient_id}",
+          "description": "Get detailed patient information by patient ID.",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": false,
+          "parameters": {
+            "patient_id": "Patient ID"
+          }
+        },
+        {
+          "name": "list_departments",
+          "method": "GET",
+          "path": "/api/v1/departments/",
+          "description": "List hospital departments available to patients",
+          "visibility": "public",
+          "requires_auth": false,
+          "requires_user_context": false
+        },
+        {
+          "name": "list_doctors",
+          "method": "GET",
+          "path": "/api/v1/doctors/",
+          "description": "List doctors and their availability",
+          "visibility": "public",
+          "requires_auth": false,
+          "requires_user_context": false,
+          "parameters": {
+            "specialization": "Doctor specialization",
+            "search": "Doctor search expression",
+            "page": "Page number",
+            "page_size": "Results per page"
+          }
+        },
+        {
+          "name": "get_doctor",
+          "method": "GET",
+          "path": "/api/v1/doctors/{doctor_id}",
+          "description": "Get detailed doctor information",
+          "visibility": "public",
+          "requires_auth": false,
+          "requires_user_context": false,
+          "parameters": {
+            "doctor_id": "Doctor ID"
+          }
+        },
+        {
+          "name": "list_services",
+          "method": "GET",
+          "path": "/api/v1/services/",
+          "description": "List hospital services and departments",
+          "visibility": "public",
+          "requires_auth": false,
+          "requires_user_context": false
+        },
+        {
+          "name": "get_hospital_info",
+          "method": "GET",
+          "path": "/api/v1/hospital/info",
+          "description": "Get hospital general information, timings, and facilities",
+          "visibility": "public",
+          "requires_auth": false,
+          "requires_user_context": false
+        },
+        {
+          "name": "list_appointments",
+          "method": "GET",
+          "path": "/api/v1/appointments/",
+          "description": "List authenticated patient's appointments",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": true,
+          "parameters": {
+            "status": "Appointment status",
+            "start_date": "ISO start date",
+            "end_date": "ISO end date",
+            "limit": "Maximum results"
+          }
+        },
+        {
+          "name": "get_appointment",
+          "method": "GET",
+          "path": "/api/v1/appointments/{appointment_id}",
+          "description": "Get detailed appointment information",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": true,
+          "parameters": {
+            "appointment_id": "Appointment ID"
+          }
+        },
+        {
+          "name": "book_appointment",
+          "method": "POST",
+          "path": "/api/v1/appointments",
+          "description": "Book an appointment with a doctor",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": true,
+          "parameters": {
+            "doctor_id": "Doctor ID",
+            "date": "ISO date for appointment",
+            "time_slot": "Available time slot",
+            "reason": "Reason for appointment"
+          },
+          "required_parameters": ["doctor_id", "date", "time_slot"]
+        },
+        {
+          "name": "list_medical_reports",
+          "method": "GET",
+          "path": "/api/v1/reports/",
+          "description": "List authenticated patient's medical reports",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": true
+        },
+        {
+          "name": "get_medical_report",
+          "method": "GET",
+          "path": "/api/v1/reports/{report_id}",
+          "description": "Get detailed medical report",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": true,
+          "parameters": {
+            "report_id": "Report ID"
+          }
+        },
+        {
+          "name": "list_prescriptions",
+          "method": "GET",
+          "path": "/api/v1/prescriptions/",
+          "description": "List authenticated patient's prescriptions",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": true
+        },
+        {
+          "name": "list_bills",
+          "method": "GET",
+          "path": "/api/v1/bills/",
+          "description": "List authenticated patient's medical bills",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": true
+        }
+      ]
+    },
+    {
+      "app_id": "hrm",
+      "name": "Human Resources Management",
+      "base_url": "${HRM_API_URL}",
+      "jwt_secret_env": "HRM_JWT_SECRET",
+      "service_key_env": "HRM_MASTER_CHATBOT_SERVICE_KEY",
+      "authentication": {
+        "enabled": true,
+        "login_required_for_private_data": true,
+        "method": "employee_credentials",
+        "fields": [
+          {
+            "name": "employee_id",
+            "label": "Employee ID",
+            "type": "text",
+            "required": true
+          },
+          {
+            "name": "password",
+            "label": "Password",
+            "type": "password",
+            "required": true
+          }
+        ],
+        "action_label": "Sign in"
+      },
+      "chatbot": {
+        "enabled": true,
+        "welcome_message": "Hi! I can help you with employee information, attendance, leave, payroll, and HR services.",
+        "quick_actions": [
+          "My attendance",
+          "My leaves",
+          "My payslip",
+          "My profile",
+          "HR policies"
+        ]
+      },
+      "routes": [
+        {
+          "name": "list_employees",
+          "method": "GET",
+          "path": "/api/employees",
+          "description": "List employees with optional filtering",
+          "visibility": "public",
+          "requires_auth": false,
+          "requires_user_context": false,
+          "parameters": {
+            "department": "Department name",
+            "status": "Employee status",
+            "page": "Page number",
+            "page_size": "Results per page"
+          }
+        },
+        {
+          "name": "get_employee",
+          "method": "GET",
+          "path": "/api/employees/{id}",
+          "description": "Get detailed employee information",
+          "visibility": "public",
+          "requires_auth": false,
+          "requires_user_context": false,
+          "parameters": {
+            "id": "Employee ID"
+          }
+        },
+        {
+          "name": "list_departments",
+          "method": "GET",
+          "path": "/api/departments",
+          "description": "List company departments",
+          "visibility": "public",
+          "requires_auth": false,
+          "requires_user_context": false
+        },
+        {
+          "name": "list_policies",
+          "method": "GET",
+          "path": "/api/policies",
+          "description": "List publicly available HR policies",
+          "visibility": "public",
+          "requires_auth": false,
+          "requires_user_context": false
+        },
+        {
+          "name": "get_attendance",
+          "method": "GET",
+          "path": "/api/attendance",
+          "description": "Get authenticated employee's attendance records",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": true,
+          "parameters": {
+            "start_date": "ISO start date",
+            "end_date": "ISO end date"
+          }
+        },
+        {
+          "name": "get_leave_balance",
+          "method": "GET",
+          "path": "/api/leave-balance",
+          "description": "Get authenticated employee's leave balance",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": true
+        },
+        {
+          "name": "list_leaves",
+          "method": "GET",
+          "path": "/api/leaves",
+          "description": "List authenticated employee's leave requests",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": true,
+          "parameters": {
+            "status": "Leave status",
+            "start_date": "ISO start date",
+            "end_date": "ISO end date"
+          }
+        },
+        {
+          "name": "request_leave",
+          "method": "POST",
+          "path": "/api/leaves",
+          "description": "Request time off",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": true,
+          "parameters": {
+            "start_date": "ISO start date",
+            "end_date": "ISO end date",
+            "leave_type": "Type of leave",
+            "reason": "Reason for leave"
+          },
+          "required_parameters": ["start_date", "end_date", "leave_type"]
+        },
+        {
+          "name": "get_payroll",
+          "method": "GET",
+          "path": "/api/payroll",
+          "description": "Get authenticated employee's payroll information",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": true
+        },
+        {
+          "name": "list_payslips",
+          "method": "GET",
+          "path": "/api/payslips",
+          "description": "List authenticated employee's payslips",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": true,
+          "parameters": {
+            "start_date": "ISO start date",
+            "end_date": "ISO end date"
+          }
+        },
+        {
+          "name": "get_payslip",
+          "method": "GET",
+          "path": "/api/payslips/{payslip_id}",
+          "description": "Get detailed payslip information",
+          "visibility": "private",
+          "requires_auth": true,
+          "requires_user_context": true,
+          "parameters": {
+            "payslip_id": "Payslip ID"
+          }
+        },
+        {
+          "name": "get_holidays",
+          "method": "GET",
+          "path": "/api/holidays",
+          "description": "Get company holidays calendar",
+          "visibility": "public",
+          "requires_auth": false,
+          "requires_user_context": false
+        }
+      ]
+    }
+  ]
+}

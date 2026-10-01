@@ -1,0 +1,70 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "master-chatbot-client"
+version = "1.0.0"
+description = "Python SDK for Master Chatbot Service - Multi-application AI assistant client"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Master Chatbot Team", email = "team@example.com"}
+]
+requires-python = ">=3.10"
+keywords = ["chatbot", "sdk", "client", "ai", "master"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+dependencies = [
+    "httpx>=0.24.0",
+    "pydantic>=2.0",
+]
+
+[project.scripts]
+master-chatbot = "master_chatbot.cli:main"
+
+[project.optional-dependencies]
+async = ["httpx[http2]"]
+dev = [
+    "pytest>=7.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.0",
+    "black>=23.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0",
+]
+docs = ["sphinx>=5.0", "sphinx-rtd-theme>=1.0"]
+
+[project.urls]
+Homepage = "https://github.com/example/master-chatbot-client"
+Documentation = "https://master-chatbot-client.readthedocs.io"
+Repository = "https://github.com/example/master-chatbot-client"
+Issues = "https://github.com/example/master-chatbot-client/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["master_chatbot*"]
+
+[tool.black]
+line-length = 100
+target-version = ['py310']
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+select = ["E", "F", "W", "I"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false

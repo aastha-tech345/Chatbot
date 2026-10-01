@@ -1,0 +1,1 @@
+self.__SSG_MANIFEST=new Set(["\u002Fapp-registry\u002F[id]","\u002Fapp-registry\u002F[id]\u002Fconfiguration","\u002Fapp-registry\u002F[id]\u002Fedit","\u002Fapp-registry\u002F[id]\u002Flogs","\u002Fapp-registry\u002F[id]\u002Froutes","\u002Fapp-registry\u002F[id]\u002Fsettings","\u002Fapp-registry\u002F[id]\u002Ftest"]);self.__SSG_MANIFEST_CB&&self.__SSG_MANIFEST_CB()

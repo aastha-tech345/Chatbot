@@ -1,0 +1,227 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─────────────────────────────────────────
+   Design Tokens
+───────────────────────────────────────── */
+@layer base {
+  :root {
+    --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+    --background:    220 22% 97%;
+    --sidebar-bg:    0 0% 100%;
+    --header-bg:     0 0% 100%;
+
+    --card:          0 0% 100%;
+    --card-foreground: 224 38% 13%;
+
+    --foreground:    224 38% 13%;
+    --muted:         220 18% 94%;
+    --muted-foreground: 220 12% 48%;
+
+    --primary:       252 84% 57%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 252 84% 97%;
+    --primary-hover: 252 84% 50%;
+
+    --secondary:     220 14% 96%;
+    --secondary-foreground: 224 38% 13%;
+
+    --border:        220 16% 91%;
+    --border-light:  220 16% 95%;
+
+    --success:       142 72% 34%;
+    --success-bg:    142 72% 95%;
+    --warning:       38  92% 44%;
+    --warning-bg:    38  92% 95%;
+    --destructive:   0   72% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --destructive-bg: 0  72% 96%;
+    --info:          217 91% 54%;
+    --info-bg:       217 91% 96%;
+
+    --radius: 0.5rem;
+
+    /* Elevation */
+    --shadow-xs: 0 1px 2px 0 rgba(0,0,0,0.05);
+    --shadow-sm: 0 1px 3px 0 rgba(0,0,0,0.07), 0 1px 2px -1px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px -2px rgba(0,0,0,0.07);
+    --shadow-lg: 0 8px 24px -4px rgba(0,0,0,0.09);
+  }
+
+  .dark {
+    --background:    224 24% 10%;
+    --sidebar-bg:    224 24% 12%;
+    --header-bg:     224 24% 12%;
+
+    --card:          224 22% 14%;
+    --card-foreground: 220 18% 90%;
+
+    --foreground:    220 18% 90%;
+    --muted:         224 18% 20%;
+    --muted-foreground: 220 12% 56%;
+
+    --primary:       255 82% 64%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 255 82% 17%;
+    --primary-hover: 255 82% 58%;
+
+    --secondary:     224 18% 22%;
+    --secondary-foreground: 220 18% 90%;
+
+    --border:        224 18% 22%;
+    --border-light:  224 18% 18%;
+
+    --success:       142 60% 42%;
+    --success-bg:    142 60% 12%;
+    --warning:       38  85% 50%;
+    --warning-bg:    38  85% 13%;
+    --destructive:   0   68% 55%;
+    --destructive-foreground: 0 0% 100%;
+    --destructive-bg: 0  68% 13%;
+    --info:          217 85% 60%;
+    --info-bg:       217 85% 13%;
+  }
+
+  * { @apply border-border; }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Smooth scrollbar */
+  * { scrollbar-width: thin; scrollbar-color: hsl(var(--border)) transparent; }
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 99px; }
+}
+
+/* ─────────────────────────────────────────
+   Component Utilities
+───────────────────────────────────────── */
+@layer components {
+
+  /* Navigation items */
+  .nav-item {
+    @apply flex h-9 items-center gap-2.5 rounded-md px-3 text-sm font-medium
+           text-muted-foreground transition-colors duration-150
+           hover:bg-[hsl(var(--primary-light))] hover:text-primary;
+  }
+  .nav-item-active {
+    @apply bg-[hsl(var(--primary-light))] text-primary font-semibold;
+  }
+
+  /* Data tables */
+  .data-table thead th {
+    @apply bg-[hsl(var(--muted))] px-3 py-2.5 text-left
+           text-xs font-semibold uppercase tracking-wide text-muted-foreground;
+  }
+  .data-table tbody tr {
+    @apply border-b border-[hsl(var(--border-light))] last:border-0
+           hover:bg-[hsl(var(--muted))]/40 transition-colors duration-100;
+  }
+  .data-table tbody td {
+    @apply px-3 py-3 text-sm;
+  }
+
+  /* Fade-in for page mount */
+  .page-fade {
+    animation: pageFade 220ms ease both;
+  }
+  @keyframes pageFade {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Slide-in for dropdowns / modals */
+  .dropdown-enter {
+    animation: dropdownIn 150ms ease both;
+  }
+  @keyframes dropdownIn {
+    from { opacity: 0; transform: scale(0.97) translateY(-4px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  /* Modal backdrop */
+  .modal-enter {
+    animation: modalIn 180ms ease both;
+  }
+  .scrollbar-none {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.96); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  /* Pulsing status dot */
+  .status-pulse {
+    position: relative;
+  }
+  .status-pulse::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.25;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.25; }
+    50%       { transform: scale(1.6); opacity: 0; }
+  }
+
+  /* Skeleton shimmer */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      hsl(var(--muted)) 25%,
+      hsl(var(--border-light)) 50%,
+      hsl(var(--muted)) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.4s ease-in-out infinite;
+  }
+  @keyframes shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* Message bubble entrance */
+  .msg-enter {
+    animation: msgIn 200ms ease both;
+  }
+  @keyframes msgIn {
+    from { opacity: 0; transform: translateY(8px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+}
+
+/* ─────────────────────────────────────────
+   Reduced-motion overrides
+───────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .page-fade,
+  .dropdown-enter,
+  .modal-enter,
+  .msg-enter {
+    animation: none !important;
+  }
+  .status-pulse::after,
+  .shimmer {
+    animation: none !important;
+  }
+  * {
+    transition-duration: 0.01ms !important;
+  }
+}

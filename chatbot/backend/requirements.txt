@@ -1,0 +1,8 @@
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.13.4
+httpx>=0.24,<0.29
+langchain>=0.3,<0.4
+langchain-openai>=0.2,<0.4
+langchain-groq>=0.2,<0.4
+langgraph>=0.2,<0.4
